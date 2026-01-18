@@ -62,6 +62,22 @@ void Game::handleEvents() {
     }
 }
 
+void Game::handleInput(float dt) {
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+        if (e.type == SDL_QUIT) running = false;
+
+        const Uint8* state = SDL_GetKeyboardState(NULL);
+        if (state[SDL_SCANCODE_LEFT]) pushInput(&combo, LEFT, SDL_GetTicks()/1000.0f);
+        if (state[SDL_SCANCODE_RIGHT]) pushInput(&combo, RIGHT, SDL_GetTicks()/1000.0f);
+        if (state[SDL_SCANCODE_X]) pushInput(&combo, X, SDL_GetTicks()/1000.0f);
+        if (state[SDL_SCANCODE_Y]) pushInput(&combo, Y, SDL_GetTicks()/1000.0f);
+    }
+
+    player.processCombo(combo);
+}
+
+
 void Game::update(float dt) {
     player.update(dt);
     for (int i = 0; i < enemyCount; ++i) enemies[i].update(dt, player);
@@ -88,3 +104,4 @@ void Game::cleanup() {
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
+
