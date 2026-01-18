@@ -1,19 +1,23 @@
-#pragma once
+#ifndef ENEMY_H
+#define ENEMY_H
+
 #include <SDL2/SDL.h>
 #include "Player.h"
 
+enum EnemyType { Aggressive, Ranged };
+
 class Enemy {
 public:
-    Enemy();
-    void init(SDL_Renderer* renderer, int type, int startX, int startY);
-    void update(float dt, const Player& player);
+    Enemy(int x, int y, EnemyType type);
+    void update(float dt, Player& player);
     void render(SDL_Renderer* renderer);
-
-    int x, y;
-    int health;
+    int getDamage();
+    void stun();
 
 private:
-    int type;
-    SDL_Texture* spriteIdle;
-    SDL_Texture* spriteAttack;
+    int x, y;
+    EnemyType type;
+    bool stunned;
 };
+
+#endif
