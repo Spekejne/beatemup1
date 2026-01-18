@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "Player.h"
 #include "Enemy.h"
 #include "Stage.h"
@@ -16,6 +17,7 @@ public:
     bool init();
     void run();
     void cleanup();
+    bool isRunning() const { return running; }  // dostępna dla main.cpp jeśli trzeba
 
 private:
     SDL_Window* window;
@@ -26,7 +28,7 @@ private:
     Stage stage;
     std::vector<Enemy> enemies;
 
-    ComboBuffer combo;    // wcześniej brakowało
+    ComboBuffer combo;
 
     void handleEvents();
     void handleInput(float dt);
