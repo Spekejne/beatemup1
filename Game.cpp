@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <SDL2/SDL_image.h>
 #include <iostream>
 
 Game::Game() : window(nullptr), renderer(nullptr), running(false) {}
@@ -17,8 +16,8 @@ bool Game::init() {
     stage.loadStage("stage1.txt");
     player.init(renderer);
 
-    enemies.push_back(Enemy(400,300,Aggressive));
-    enemies.push_back(Enemy(600,300,Ranged));
+    enemies.push_back(Enemy(400, 300, Aggressive));
+    enemies.push_back(Enemy(600, 300, Ranged));
 
     running = true;
     return true;
@@ -37,7 +36,7 @@ void Game::run() {
         player.update(dt);
         for (auto &enemy : enemies) enemy.update(dt, player);
 
-        // przykładowy update kolizji
+        // kolizje
         for (auto &enemy : enemies) {
             if (player.checkHit(enemy)) {
                 player.onHit(enemy.getDamage());
@@ -77,7 +76,6 @@ void Game::handleInput(float dt) {
 
     player.processCombo(combo);
 
-    // ruch gracza
     if (state[SDL_SCANCODE_A]) player.moveLeft(dt);
     if (state[SDL_SCANCODE_D]) player.moveRight(dt);
     if (state[SDL_SCANCODE_W]) player.jump(dt);
