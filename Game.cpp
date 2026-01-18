@@ -1,5 +1,7 @@
 #include "Game.h"
 #include <iostream>
+#include <SDL2/SDL_image.h>
+
 
 Game::Game() : window(nullptr), renderer(nullptr), running(false) {}
 
@@ -81,3 +83,4 @@ void Game::handleInput(float dt) {
     if (state[SDL_SCANCODE_W]) player.jump(dt);
     if (state[SDL_SCANCODE_S]) player.crouch(dt);
 }
+
