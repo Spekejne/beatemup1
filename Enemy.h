@@ -2,7 +2,7 @@
 #define ENEMY_H
 
 #include <SDL2/SDL.h>
-#include "Player.h"
+class Player;
 
 enum EnemyType { Aggressive, Ranged };
 
