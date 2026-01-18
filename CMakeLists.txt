@@ -21,6 +21,6 @@ target_include_directories(beatemup PRIVATE
 )
 
 target_link_libraries(beatemup
-    ${SDL2_LIBRARIES}
-    ${SDL2_IMAGE_LIBRARIES}
+    SDL2::SDL2
+    SDL2_image::SDL2_image
 )
