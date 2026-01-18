@@ -10,6 +10,9 @@
 
 class Game {
 public:
+    void handleEvents();
+    void handleInput(float dt);
+    void handleInputEvent(SDL_Event& e);
     Game();
     ~Game();
     bool init();
@@ -34,3 +37,4 @@ private:
     void render();
     void loadStage(const char* filename);
 };
+
