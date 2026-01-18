@@ -36,12 +36,22 @@ void Player::render(SDL_Renderer* renderer) {
 }
 
 void Player::processCombo(const ComboBuffer& buffer) {
-    // minimalna implementacja combo
-    for (int i = 0; i < buffer.count; ++i) {
-        if (buffer.inputs[i] == X) {
-            // lekki atak
-        } else if (buffer.inputs[i] == Y) {
-            // ciężki atak
-        }
+    if (buffer.count < 3) return; // combo wymagają min. 3 wejść
+
+    // przykładowe combo: X X X -> mocny atak
+    if (buffer.inputs[buffer.count-1] == X &&
+        buffer.inputs[buffer.count-2] == X &&
+        buffer.inputs[buffer.count-3] == X) {
+        // heavy attack
+        health -= 0; // placeholder
+    }
+
+    // combo X Y X -> specjalny atak
+    if (buffer.inputs[buffer.count-1] == X &&
+        buffer.inputs[buffer.count-2] == Y &&
+        buffer.inputs[buffer.count-3] == X) {
+        // special attack
     }
 }
+
+
