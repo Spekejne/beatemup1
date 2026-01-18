@@ -1,36 +1,21 @@
-#include "Enemy.h"
-#include <SDL2/SDL_image.h>
-
-Enemy::Enemy() : x(0), y(0), health(50), type(1),
-                 spriteIdle(nullptr), spriteAttack(nullptr) {}
-
-void Enemy::init(SDL_Renderer* renderer, int t, int startX, int startY) {
-    type = t;
-    x = startX;
-    y = startY;
-    health = 50;
-
-    SDL_Surface* surf = SDL_LoadBMP(type == 1 ? "assets/enemy1_idle.bmp" : "assets/enemy2_idle.bmp");
-    spriteIdle = SDL_CreateTextureFromSurface(renderer, surf);
-    SDL_FreeSurface(surf);
-
-    surf = SDL_LoadBMP(type == 1 ? "assets/enemy1_attack.bmp" : "assets/enemy2_attack.bmp");
-    spriteAttack = SDL_CreateTextureFromSurface(renderer, surf);
-    SDL_FreeSurface(surf);
-}
-
 void Enemy::update(float dt, const Player& player) {
-    // prosty AI
-    if (type == 1) { // agresywny
-        if (player.x < x) x -= int(100 * dt);
-        else x += int(100 * dt);
-    } else if (type == 2) { // dystansowy
-        if (player.x > x) x += int(150 * dt);
-        else x -= int(150 * dt);
-    }
-}
+    if (health <= 0) return;
 
-void Enemy::render(SDL_Renderer* renderer) {
-    SDL_Rect dst = { x, y, 64, 64 };
-    SDL_RenderCopy(renderer, spriteIdle, NULL, &dst);
+    int dx = player.x - x;
+    int dy = player.y - y;
+
+    // prosty AI: typ 1 -> agresywny
+    if (type == 1) {
+        if (abs(dx) > 10) x += (dx > 0 ? 100 : -100) * dt;
+    } 
+    // typ 2 -> dystansowy, strzelanie/szarża
+    else if (type == 2) {
+        if (abs(dx) > 200) x += (dx > 0 ? 150 : -150) * dt; // zbliżenie
+        else if (abs(dx) < 50) x -= (dx > 0 ? 150 : -150) * dt; // dystans
+    }
+
+    // można dodać atak jeśli blisko
+    if (abs(dx) < 30 && abs(dy) < 30) {
+        // uderzenie gracza
+    }
 }
