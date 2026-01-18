@@ -1,21 +1,12 @@
-void Enemy::update(float dt, const Player& player) {
-    if (health <= 0) return;
+#include "Enemy.h"
+#include "Player.h"
 
-    int dx = player.x - x;
-    int dy = player.y - y;
+Enemy::Enemy(int x_, int y_, EnemyType type_) : x(x_), y(y_), type(type_), stunned(false) {}
 
-    // prosty AI: typ 1 -> agresywny
-    if (type == 1) {
-        if (abs(dx) > 10) x += (dx > 0 ? 100 : -100) * dt;
-    } 
-    // typ 2 -> dystansowy, strzelanie/szarża
-    else if (type == 2) {
-        if (abs(dx) > 200) x += (dx > 0 ? 150 : -150) * dt; // zbliżenie
-        else if (abs(dx) < 50) x -= (dx > 0 ? 150 : -150) * dt; // dystans
-    }
+void Enemy::update(float dt, Player& player) {}
 
-    // można dodać atak jeśli blisko
-    if (abs(dx) < 30 && abs(dy) < 30) {
-        // uderzenie gracza
-    }
-}
+void Enemy::render(SDL_Renderer* renderer) {}
+
+int Enemy::getDamage() { return 10; }
+
+void Enemy::stun() { stunned = true; }
