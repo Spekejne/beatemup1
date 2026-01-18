@@ -13,7 +13,6 @@ add_executable(main
         Enemy.cpp
         Stage.cpp
         Menu.cpp
-        Input.cpp
         Score.cpp
         Config.cpp
         Input.cpp
