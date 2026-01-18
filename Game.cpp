@@ -60,20 +60,22 @@ void Game::handleEvents() {
         if (e.type == SDL_QUIT) running = false;
         handleInput(e);
     }
+
+  player.processCombo(combo);
 }
 
 void Game::handleInput(float dt) {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
-        if (e.type == SDL_QUIT) running = false;
+        if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP){
 
         const Uint8* state = SDL_GetKeyboardState(NULL);
         if (state[SDL_SCANCODE_LEFT]) pushInput(&combo, LEFT, SDL_GetTicks()/1000.0f);
         if (state[SDL_SCANCODE_RIGHT]) pushInput(&combo, RIGHT, SDL_GetTicks()/1000.0f);
         if (state[SDL_SCANCODE_X]) pushInput(&combo, X, SDL_GetTicks()/1000.0f);
         if (state[SDL_SCANCODE_Y]) pushInput(&combo, Y, SDL_GetTicks()/1000.0f);
+      }
     }
-
     player.processCombo(combo);
 }
 
@@ -104,5 +106,6 @@ void Game::cleanup() {
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
+
 
 
