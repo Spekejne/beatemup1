@@ -1,13 +1,14 @@
-#pragma once
+#ifndef STAGE_H
+#define STAGE_H
+
 #include <SDL2/SDL.h>
+#include "Player.h"
 
 class Stage {
 public:
-    Stage();
-    void init(SDL_Renderer* renderer);
-    void update(float dt);
+    void loadStage(const char* filename);
     void render(SDL_Renderer* renderer);
-
-private:
-    SDL_Texture* background;
+    bool isComplete(const Player& player);
 };
+
+#endif
