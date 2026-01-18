@@ -58,7 +58,7 @@ void Game::handleEvents() {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         if (e.type == SDL_QUIT) running = false;
-        handleInput(&player, e);
+        handleInput(e);
     }
 }
 
@@ -104,4 +104,5 @@ void Game::cleanup() {
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
+
 
