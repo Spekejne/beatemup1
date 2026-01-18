@@ -2,33 +2,34 @@
 #define GAME_H
 
 #include <SDL2/SDL.h>
-#include <vector>
 #include "Player.h"
 #include "Enemy.h"
 #include "Stage.h"
 #include "Input.h"
+#include <vector>
 
 class Game {
 public:
     Game();
     ~Game();
 
-    void handleEvents();               // obsługa wszystkich eventów
-    void handleInput(float dt);        // ciągłe ruchy gracza
-    void handleInputEvent(SDL_Event& e); // pojedynczy event (combo)
-    void update(float dt);
-    void render();
-
-    bool isRunning() const { return running; }
+    bool init();
+    void run();
+    void cleanup();
 
 private:
-    Player player;
-    std::vector<Enemy> enemies;
-    Stage stage;
-
+    SDL_Window* window;
+    SDL_Renderer* renderer;
     bool running;
 
-    ComboBuffer combo;   // buffer combo dla gracza
+    Player player;
+    Stage stage;
+    std::vector<Enemy> enemies;
+
+    ComboBuffer combo;    // wcześniej brakowało
+
+    void handleEvents();
+    void handleInput(float dt);
 };
 
-#endif // GAME_H
+#endif
