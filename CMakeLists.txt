@@ -1,34 +1,26 @@
 cmake_minimum_required(VERSION 3.10)
-project(BeatEmUp)
+project(beatemup)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
+find_package(SDL2_image REQUIRED)
 
-add_executable(main
-        main.cpp
-        Game.cpp
-        Player.cpp
-        Enemy.cpp
-        Stage.cpp
-        Menu.cpp
-        Score.cpp
-        Config.cpp
-        Input.cpp
-        Input.h
-        Player.cpp
-        Player.h
-        Enemy.cpp
-        Enemy.h
-        Stage.cpp
-        Stage.h
-        Menu.cpp
-        Menu.h
-        Score.cpp
-        Score.h
-        Config.cpp
-        Config.h
+add_executable(beatemup
+    main.cpp
+    Game.cpp
+    Player.cpp
+    Enemy.cpp
+    Stage.cpp
 )
 
-target_link_libraries(main ${SDL2_LIBRARIES})
+target_include_directories(beatemup PRIVATE
+    ${SDL2_INCLUDE_DIRS}
+    ${SDL2_IMAGE_INCLUDE_DIRS}
+)
+
+target_link_libraries(beatemup
+    ${SDL2_LIBRARIES}
+    ${SDL2_IMAGE_LIBRARIES}
+)
