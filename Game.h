@@ -32,9 +32,9 @@ private:
     Score score;
     Config config;
 
-    void handleEvents();
     void update(float dt);
     void render();
     void loadStage(const char* filename);
 };
+
 
