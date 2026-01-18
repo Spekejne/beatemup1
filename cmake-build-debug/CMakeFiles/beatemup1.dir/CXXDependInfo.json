@@ -1,0 +1,27 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "MSVC",
+	"compiler-id" : "MSVC",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "C:/Users/srocl/CLionProjects/beatemup1/cmake-build-debug",
+	"dir-cur-src" : "C:/Users/srocl/CLionProjects/beatemup1",
+	"dir-top-bld" : "C:/Users/srocl/CLionProjects/beatemup1/cmake-build-debug",
+	"dir-top-src" : "C:/Users/srocl/CLionProjects/beatemup1",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : [],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "C:/Users/srocl/CLionProjects/beatemup1/cmake-build-debug/CMakeFiles/beatemup1.dir",
+	"sources" : 
+	{
+		"CMakeFiles/beatemup1.dir/main.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/srocl/CLionProjects/beatemup1/main.cpp"
+		}
+	}
+}
