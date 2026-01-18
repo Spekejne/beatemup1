@@ -1,111 +1,90 @@
 #include "Game.h"
-#include <SDL2/SDL_timer.h>
-#include <fstream>
+#include <SDL2/SDL_image.h>
+#include <iostream>
 
-Game::Game() : window(nullptr), renderer(nullptr), running(false),
-               enemies(nullptr), enemyCount(0) {}
-
-Game::~Game() {}
-
-bool Game::init() {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
-        SDL_Log("Unable to init SDL: %s", SDL_GetError());
-        return false;
-    }
-    window = SDL_CreateWindow("BeatEmUp", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, 0);
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    running = true;
-
-    player.init(renderer);
-    stage.init(renderer);
-    menu.init(renderer);
-    score.init();
-
-    loadStage("stages/stage1.cfg"); // przykładowy etap
-
-    return true;
+// ----------------- Konstruktor / Destruktor -----------------
+Game::Game() : running(true) {
+    stage.loadStage("stage1.txt");   // przykładowy plik etapu
+    player.init(100, 300);           // startowa pozycja
+    // tworzymy dwóch wrogów dla demo
+    enemies.push_back(Enemy(400, 300, Aggressive));
+    enemies.push_back(Enemy(600, 300, Ranged));
 }
 
-void Game::loadStage(const char* filename) {
-    std::ifstream file(filename);
-    if (!file.is_open()) return;
-
-    file >> enemyCount;
-    enemies = new Enemy[enemyCount];
-    for (int i = 0; i < enemyCount; ++i) {
-        int type, x, y;
-        file >> type >> x >> y;
-        enemies[i].init(renderer, type, x, y);
-    }
-    file.close();
+Game::~Game() {
+    // cleanup jeśli trzeba
 }
 
-void Game::run() {
-    Uint32 lastTime = SDL_GetTicks();
-    while (running) {
-        Uint32 current = SDL_GetTicks();
-        float dt = (current - lastTime) / 1000.0f;
-        lastTime = current;
-
-        handleEvents();
-        update(dt);
-        render();
-        SDL_Delay(16);
-    }
-}
-
+// ----------------- Obsługa eventów -----------------
 void Game::handleEvents() {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         if (e.type == SDL_QUIT) running = false;
-        handleInput(e);
+        handleInputEvent(e);  // każdy event trafia do combo/input
     }
 
-  player.processCombo(combo);
-}
-
-void Game::handleInput(float dt) {
-    SDL_Event e;
-    while (SDL_PollEvent(&e)) {
-        if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP){
-
-        const Uint8* state = SDL_GetKeyboardState(NULL);
-        if (state[SDL_SCANCODE_LEFT]) pushInput(&combo, LEFT, SDL_GetTicks()/1000.0f);
-        if (state[SDL_SCANCODE_RIGHT]) pushInput(&combo, RIGHT, SDL_GetTicks()/1000.0f);
-        if (state[SDL_SCANCODE_X]) pushInput(&combo, X, SDL_GetTicks()/1000.0f);
-        if (state[SDL_SCANCODE_Y]) pushInput(&combo, Y, SDL_GetTicks()/1000.0f);
-      }
-    }
+    // przetwarzamy combo po wszystkich eventach
     player.processCombo(combo);
 }
 
+// pojedynczy event
+void Game::handleInputEvent(SDL_Event& e) {
+    if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
+        const Uint8* state = SDL_GetKeyboardState(NULL);
 
-void Game::update(float dt) {
-    player.update(dt);
-    for (int i = 0; i < enemyCount; ++i) enemies[i].update(dt, player);
-    stage.update(dt);
-    score.update(player, enemies, enemyCount);
+        if (state[SDL_SCANCODE_LEFT])  pushInput(&combo, LEFT, SDL_GetTicks()/1000.0f);
+        if (state[SDL_SCANCODE_RIGHT]) pushInput(&combo, RIGHT, SDL_GetTicks()/1000.0f);
+        if (state[SDL_SCANCODE_X])     pushInput(&combo, X, SDL_GetTicks()/1000.0f);
+        if (state[SDL_SCANCODE_Y])     pushInput(&combo, Y, SDL_GetTicks()/1000.0f);
+    }
 }
 
+// ----------------- Ciągłe ruchy gracza -----------------
+void Game::handleInput(float dt) {
+    const Uint8* state = SDL_GetKeyboardState(NULL);
+
+    if (state[SDL_SCANCODE_A]) player.moveLeft(dt);
+    if (state[SDL_SCANCODE_D]) player.moveRight(dt);
+    if (state[SDL_SCANCODE_W]) player.jump(dt);
+    if (state[SDL_SCANCODE_S]) player.crouch(dt);
+}
+
+// ----------------- Update logiki gry -----------------
+void Game::update(float dt) {
+    player.update(dt);
+
+    // prosty AI dla wrogów
+    for (auto& enemy : enemies) {
+        enemy.update(dt, player); // wrogowie reagują na pozycję gracza
+    }
+
+    // kolizje i hitboxy
+    for (auto& enemy : enemies) {
+        if (player.checkHit(enemy)) {
+            player.onHit(enemy.getDamage());
+            enemy.stun();
+        }
+    }
+
+    // sprawdzenie zakończenia etapu
+    if (stage.isComplete(player)) {
+        std::cout << "Stage complete!\n";
+        running = false; // demo
+    }
+}
+
+// ----------------- Renderowanie -----------------
 void Game::render() {
+    SDL_Renderer* renderer = stage.getRenderer();
+
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
     stage.render(renderer);
     player.render(renderer);
-    for (int i = 0; i < enemyCount; ++i) enemies[i].render(renderer);
-    score.render(renderer, renderer);
-    menu.render(renderer);
+
+    for (auto& enemy : enemies)
+        enemy.render(renderer);
 
     SDL_RenderPresent(renderer);
 }
-
-void Game::cleanup() {
-    delete[] enemies;
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-}
-
-
-
