@@ -1,16 +1,22 @@
-#pragma once
+#ifndef INPUT_H
+#define INPUT_H
 
-#include <SDL2/SDL.h>
+enum InputType { LEFT, RIGHT, X, Y };
 
-enum InputType { NONE, LEFT, RIGHT, UP, DOWN, X, Y };
-
-struct ComboBuffer {
-    InputType inputs[10]; // maks 10 ostatnich komend
-    float timestamps[10];
-    int count;
-
-    void clear() { count = 0; }
+struct Input {
+    InputType type;
+    float time;
 };
 
-void pushInput(ComboBuffer* buffer, InputType input, float time);
-InputType getLastInput(const ComboBuffer* buffer);
+struct ComboBuffer {
+    Input inputs[10];
+    int count = 0;
+};
+
+inline void pushInput(ComboBuffer* combo, InputType type, float time) {
+    if (combo->count < 10) {
+        combo->inputs[combo->count++] = {type, time};
+    }
+}
+
+#endif
